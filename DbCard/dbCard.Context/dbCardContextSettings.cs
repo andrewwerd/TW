@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.IO;
 
-namespace dbCard.Context
+namespace DbCard.Context
 {
-    public class dbCardContextSettings
+    public class DbCardContextSettings
     {
         public static IConfigurationRoot ConfigurationRoot { get; set; }
 

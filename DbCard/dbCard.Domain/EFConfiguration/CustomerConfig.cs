@@ -1,8 +1,7 @@
-﻿using dbCard.Domain.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace dbCard.Domain.EFConfiguration
+namespace DbCard.Domain.EFConfiguration
 {
     public class CustomerConfig : IEntityTypeConfiguration<Customer>
     {
@@ -14,6 +13,11 @@ namespace dbCard.Domain.EFConfiguration
                  .IsUnique();
 
             builder.Property(e => e.DateOfBirth).HasColumnType("date");
+
+            builder.HasOne(e => e.User)
+                .WithOne(y => y.Customer)
+                .HasForeignKey<Customer>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(e => e.DateOfRegistration)
                 .HasColumnType("date")
@@ -31,9 +35,11 @@ namespace dbCard.Domain.EFConfiguration
                 .IsRequired()
                 .HasMaxLength(40);
 
-            builder.HasOne(d => d.User)
-                .WithOne(p => p.Customer)
-                .HasForeignKey<Customer>(d => d.UserId);
+            builder.Property(b => b.RowVersion)
+                .IsRowVersion();
+
+            builder.Property(b => b.RowVersion)
+                   .IsRowVersion();
         }
     }
 }

@@ -1,19 +1,27 @@
-﻿using dbCard.Domain.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace dbCard.Domain.EFConfiguration
+namespace DbCard.Domain.EFConfiguration
 {
     public class FilialConfig : IEntityTypeConfiguration<Filial>
     {
         public void Configure(EntityTypeBuilder<Filial> builder)
         {
+            builder.Property(b => b.RowVersion)
+                .IsRowVersion();
             builder.HasIndex(e => e.PhoneNumber)
                      .IsUnique();
-
-            builder.Property(e => e.Address)
+            builder.Property(x => x.IsMainOffice)
                 .IsRequired()
-                .HasMaxLength(40);
+                .HasDefaultValue(false);
+
+            builder.Property(b => b.HouseNumber).IsRequired();
+
+            builder.Property(b => b.Region).IsRequired();
+
+            builder.Property(b => b.Street).IsRequired();
+
+            builder.Property(b => b.City).IsRequired();
 
             builder.Property(e => e.PhoneNumber)
                 .IsRequired()
@@ -22,7 +30,7 @@ namespace dbCard.Domain.EFConfiguration
             builder.HasOne(d => d.Partner)
                 .WithMany(p => p.Filials)
                 .HasForeignKey(d => d.PartnerId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using dbCard.Domain.Models;
 
-namespace dbCard.Domain.EFConfiguration
+namespace DbCard.Domain.EFConfiguration
 {
     public class TransactionConfig : IEntityTypeConfiguration<Transaction>
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            builder.Property(b => b.RowVersion)
+                .IsRowVersion();
             builder.ToTable("TransactionHistory");
             builder.Property(e => e.AccumulationAmount).HasColumnType("decimal(10, 2)");
 
@@ -15,9 +16,15 @@ namespace dbCard.Domain.EFConfiguration
 
             builder.Property(e => e.AmountForPay).HasColumnType("decimal(10, 2)");
 
-            builder.Property(e => e.Category)
-                .IsRequired()
-                .HasMaxLength(40);
+            builder.HasOne(x => x.Category)
+                .WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.HasOne(x => x.Subcategory)
+    .WithMany(p => p.Transactions)
+    .HasForeignKey(d => d.SubcategoryId)
+    .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Property(e => e.DiscountAmount).HasColumnType("decimal(10, 2)");
 
@@ -32,7 +39,7 @@ namespace dbCard.Domain.EFConfiguration
             builder.HasOne(d => d.Customer)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(d => d.Filial)
                 .WithMany(p => p.Transactions)

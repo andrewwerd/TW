@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="parentContainer">
+    <div class="Logo">
+      <img style="height: 100px" src='../../assets/img/app_logo.png' alt="Logo">
+    </div>
+    <mat-card class="loginForm">
+      <mat-card-header>
+        <div *ngIf="error" class="errorLogin">{{error}}</div>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="userLoginForm">
+          <mat-form-field style="display: block">
+            <input matInput type="text" placeholder="Логин" formControlName="userName" />
+          </mat-form-field>
+          <div *ngIf="submitted" class="error">
+            <div *ngIf="userName.hasError('required') && !userName.touched && !userName.dirty">
+              Это поле обязательно
+            </div>
+          </div>
+          <mat-form-field style="display: block">
+            <input matInput [type]="hide ? 'password' : 'text'" placeholder="Пароль" formControlName="password">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+          <div *ngIf="submitted" class="error">
+            <div *ngIf="password.hasError('required') && !password.touched && !password.dirty">
+              Это поле обязательно
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="buttons">
+          <button mat-raised-button class="submitBtn" [disabled]="loading" (click)='onSubmit()'>
+            Войти
+          </button>
+          <a mat-button routerLink="/registration">
+            <span class="registerBtn">Регистрация</span>
+          </a>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
